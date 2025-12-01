@@ -112,3 +112,8 @@ First, get a reference to a device by calling MediaDevices.getUserMedia(). The e
 const user = new User("Alex", "alec")
 const friend = new BestFriends("Alex", "alec", "22.01.1900", "+88005553535")
 console.log(friend)
+
+/**
+ * До среды создать любой абстрактный класс (к примеру, бытовой прибор) и на его основе создать класс наследник
+ * Должны быть реализованы методы для работы с этими классами
+ */
