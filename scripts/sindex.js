@@ -1,119 +1,109 @@
-// /**
-//  * Абстрактный класс для создания типового пользователя
-//  * @param {string} name
-//  * @param {string} login
-//  */
-// function User(name, login) {
-//     this.name = name
-//     this.login = login
-//     this.id = crypto.randomUUID()
-// }
+/**
+ * Сущность одной заметки Note
+ * Контроллер заметок Notes
+ * UI - NotesUI
+ */
 
-// User.prototype.getId = function () {
-//     return this.id
-// }
+/**
+ * @typedef NoteProps
+ * @property {string} title
+ * @property {string} content 
+ */
 
-// function BestFriends(name, login, birthDay, phone, testValue) {
-//     User.call(this, name, login)
-//     this.birthDay = birthDay
-//     this.phone = phone
-//     // let test = testValue
-//     Object.defineProperty(this, 'test', {
-//         configurable: false,
-//         enumerable: true,
-//         get: () => this.birthDay,
-//         set: (newValue) => {
-//             const regExp = /\d{2}.\d{2}.\d{4}/
-//             if (regExp.test(newValue)) {
-//                 this.birthDay = newValue
-//             } else {
-//                 throw new Error("Не является датой")
-//             }
-//         }
-//     })
-// }
+/**
+ * @typedef NoteItem
+ * @property {string} title
+ * @property {string} content 
+ * @property {string} id
+ */
 
-// BestFriends.prototype = Object.create(User.prototype)
-// BestFriends.prototype.setBirthDay = function (newValue) {
-//     const regExp = /\d{2}.\d{2}.\d{4}/
-//     if (regExp.test(newValue)) {
-//         this.birthDay = newValue
-//     } else {
-//         throw new Error("Не является датой")
-//     }
-// }
-// BestFriends.prototype.getBirthDay = function () {
-//     return this.birthDay
-// }
-
-// const user = new User("Alex", "alec")
-
-// const friend = new BestFriends("Alex", "alec", "22.01.1900", "+88005553535", "22.11.1900")
-
-// console.log(friend)
-// console.log(user)
-
-// const f = (a) => {
-//     if (typeof a === 'string') {
-//         return a.toUpperCase()
-//     } else if (typeof a === 'number') {
-//         return a ** 3
-//     }
-// }
-
-class User {
-    #test = 234234
-    constructor(name, login) {
-        this._name = name
-        this.login = login
-        this.id = crypto.randomUUID()
-    }
-
-    getId() {
-        return this.id
-    }
-
-    getTest() {
-        return this.#test
-    }
-}
-
-class BestFriends extends User {
-    static description = `The MediaStream Image Capture API is an API for capturing images or videos from a photographic device. In addition to capturing data, it also allows you to retrieve information about device capabilities such as image size, red-eye reduction and whether or not there is a flash and what they are currently set to. Conversely, the API allows the capabilities to be configured within the constraints what the device allows.
-
-The process of retrieving an image or video stream happens as described below. The example code is adapted from Chrome's Image Capture examples.
-
-First, get a reference to a device by calling MediaDevices.getUserMedia(). The example below says give me whatever video device is available, though the getUserMedia() method allows more specific capabilities to be requested. This method returns a Promise that resolves with a MediaStream object.`
-
-    constructor(name, login, birthDay, phone) {
-        super(name, login)
-        this.birthDay = birthDay
-        this.phone = phone
-    }
-
-    get test() {
-        return this.birthDay
-    }
-
-    set test(newValue) {
-        const regExp = /\d{2}.\d{2}.\d{4}/
-        if (regExp.test(newValue)) {
-            this.birthDay = newValue
-        } else {
-            throw new Error("Не является датой")
+class Note {
+    /**
+     * @param {NoteProps} param 
+     */
+    constructor({ title, content }) {
+        if (!title.length && !content.length) return
+        // this.title = title || ''
+        // this.content = content || ''
+        /** @type {NoteItem} */
+        this.note = {
+            id: crypto.randomUUID(),
+            title: title || '',
+            content: content || ''
         }
     }
 
-    static updateDescription(value) {
-        this.description = value
+    /**
+     * редактирование текущей заметки
+     * @param {NoteProps} newValue 
+     */
+    edit(newValue) {
+        // this.item = newValue - не правильно
+        // Object.assign(this.item, newValue) // - мутабельный
+        this.note = { // иммутабельно
+            ...this.note,
+            ...newValue
+        }
     }
 }
 
-const user = new User("Alex", "alec")
-const friend = new BestFriends("Alex", "alec", "22.01.1900", "+88005553535")
-console.log(friend)
+const note = new Note({ title: '234234', content: '23423424' })
+console.log(note)
 
 /**
- * До среды создать любой абстрактный класс (к примеру, бытовой прибор) и на его основе создать класс наследник
- * Должны быть реализованы методы для работы с этими классами
+ * @typedef NoteList
+ * @property {NoteItem} note
  */
+
+class Notes {
+    /** @type {Array<Note>} */
+    notes = []
+
+    /**
+     * 
+     * @param {NoteProps} param
+     */
+    createNote({ title, content }) {
+        if (!title.length && !content.length) return
+        const note = new Note({ title, content })
+        this.notes.push(note)
+    }
+
+    /**
+     * редактирование заметки из списка заметок
+     * @param {string} id 
+     * @param {NoteProps} newValue 
+     */
+    edit(id, newValue) {
+        /** @type {Note} экземпляр класс */
+        const note = this.notes.noteById[id]
+        if (!note) return
+        note.edit(newValue)
+    }
+
+    remove(id) {
+        /**
+         * map
+         * filter
+         * reduce
+         */
+        // const buffer = []
+        // for (let i = 0; i < this.notes.length; i++) {
+        //     if (this.notes[i].note.id !== id) {
+        //        buffer.push(this.notes[i]) 
+        //     }
+        // }
+        // this.notes = buffer
+        this.notes = this.notes.filter(item => item.note.id !== id)
+    }
+
+    get noteById() {
+        return this.notes.reduce((acc, item) => {
+            acc[item.note.id] = item
+            return acc
+        }, {})
+    }
+}
+
+const notes = new Notes()
+console.log(notes)
