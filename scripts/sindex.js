@@ -59,6 +59,14 @@ class Notes {
     /** @type {Array<Note>} */
     notes = []
 
+    // getId() {
+    //     const id = Math.floor(Math.random() * 10000)
+    //     if (this.notes.some(item => item.note.id === id)) {
+    //         return this.getId()
+    //     }
+    //     return id
+    // }
+
     /**
      * 
      * @param {NoteProps} param
@@ -66,6 +74,8 @@ class Notes {
     createNote({ title, content }) {
         if (!title.length && !content.length) return
         const note = new Note({ title, content })
+        // const id = this.getId()
+        // note.edit({ id })
         this.notes.push(note)
     }
 
@@ -107,3 +117,106 @@ class Notes {
 
 const notes = new Notes()
 console.log(notes)
+
+class NotesUI extends Notes {
+    /** @type {HTMLDivElement | null} */
+    rootElement = null
+    /** @type {HTMLDivElement | null} */
+    notesList = null
+
+    constructor() {
+        super()
+
+        const root = document.querySelector('#root')
+        if (!root) {
+            throw new Error('Корневой элемент не найден')
+        }
+
+        this.rootElement = root
+        this.init()
+    }
+
+    init() {
+        const form = document.createElement('form')
+
+        const titleText = document.createElement('input')
+        titleText.setAttribute('name', 'title')
+        titleText.setAttribute('type', 'text')
+
+        const contentText = document.createElement('textarea')
+        contentText.setAttribute('name', 'context')
+
+        const buttonSend = document.createElement('button')
+        buttonSend.setAttribute('type', 'submit')
+        buttonSend.innerText = 'Добавить'
+
+        form.append(titleText, contentText, buttonSend)
+
+        // form.innerHTML = `
+        //     <input type='text' name='title'/>
+
+        // `
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            /** @type {HTMLFormElement} */
+            const target = e.target
+            const formData = new FormData(target)
+            this.createNote({
+                content: formData.get('context'),
+                title: formData.get('title')
+            })
+            titleText.value = ''
+            contentText.value = ''
+            console.log(this.notes);
+            this.render()
+        })
+
+        const notesList = document.createElement('div')
+        notesList.classList.add('notesList')
+        this.notesList = notesList
+        this.rootElement.append(form, notesList)
+    }
+
+    render () {
+        this.notesList.innerHTML = ''
+        this.notes.forEach(item => {
+            const div = document.createElement('div')
+            div.classList.add('noteItem')
+            
+            const title = document.createElement('h3')
+            title.classList.add('noteTitle')
+            title.innerText = item.note.title
+
+            const content = document.createElement('p')
+            content.classList.add('noteContent')
+            content.innerText = item.note.content
+
+            const buttons = document.createElement('div')
+            buttons.classList.add('buttons')
+
+            const remove = document.createElement('button')
+            remove.classList.add('remove')
+            remove.innerText = 'Удалить'
+
+            const edit = document.createElement('button')
+            edit.classList.add('edit')
+            edit.innerText = 'Редактировать'
+
+            remove.addEventListener('click', () => {
+                this.remove(item.note.id)
+                this.render()
+            })
+
+            buttons.append(remove, edit)
+            div.append(title, content, buttons)
+            this.notesList.append(div)
+        })
+    }
+}
+
+try {
+    new NotesUI()
+} catch (error) {
+    console.warn(error.message)
+}
