@@ -7,7 +7,8 @@
 /**
  * @typedef NoteProps
  * @property {string} title
- * @property {string} content 
+ * @property {string} content
+ * @property {string} id 
  */
 
 /**
@@ -21,13 +22,13 @@ class Note {
     /**
      * @param {NoteProps} param 
      */
-    constructor({ title, content }) {
+    constructor({ title, content, id }) {
         if (!title.length && !content.length) return
         // this.title = title || ''
         // this.content = content || ''
         /** @type {NoteItem} */
         this.note = {
-            id: crypto.randomUUID(),
+            id: id || crypto.randomUUID(),
             title: title || '',
             content: content || ''
         }
@@ -86,7 +87,7 @@ class Notes {
      */
     edit(id, newValue) {
         /** @type {Note} экземпляр класс */
-        const note = this.notes.noteById[id]
+        const note = this.noteById[id]
         if (!note) return
         note.edit(newValue)
     }
@@ -112,6 +113,24 @@ class Notes {
             acc[item.note.id] = item
             return acc
         }, {})
+    }
+
+    get store() {
+        const storeNotes = localStorage.getItem('notes')
+        if (!storeNotes) return []
+
+        // JSON
+        const notes = JSON.parse(storeNotes)
+        return notes
+    }
+
+    set store(notes) {
+        const jsonNotes = JSON.stringify(notes)
+        localStorage.setItem('notes', jsonNotes)
+    }
+
+    clearStore() {
+        localStorage.removeItem('notes')
     }
 }
 
@@ -168,22 +187,41 @@ class NotesUI extends Notes {
             })
             titleText.value = ''
             contentText.value = ''
-            console.log(this.notes);
+            console.log(this.notes)
             this.render()
+            this.store = this.notes
         })
 
         const notesList = document.createElement('div')
         notesList.classList.add('notesList')
         this.notesList = notesList
         this.rootElement.append(form, notesList)
+
+        /**
+         * if (!this.getCookie('notes')) {
+         *  this.clearStore()
+         *  this.clearCookie('notes)
+         *  return 
+         * }
+         */
+
+        /** @type {Note[]} но у storeNotes не будет метода edit*/
+        const storeNotes = this.store
+        if (!storeNotes.length) return
+        storeNotes.forEach(item => {
+            const note = new Note(item.note)
+            this.notes.push(note)
+        })
+        this.render()
     }
 
-    render () {
+    render() {
         this.notesList.innerHTML = ''
         this.notes.forEach(item => {
+            let flag = false // если false -> редактирование выключено, true -> редактирование включено
             const div = document.createElement('div')
             div.classList.add('noteItem')
-            
+
             const title = document.createElement('h3')
             title.classList.add('noteTitle')
             title.innerText = item.note.title
@@ -203,9 +241,35 @@ class NotesUI extends Notes {
             edit.classList.add('edit')
             edit.innerText = 'Редактировать'
 
+            edit.addEventListener('click', () => {
+                if (flag) {
+                    // flag === true
+                    edit.innerText = 'Редактировать'
+                    title.contentEditable = false
+                    content.contentEditable = false
+                    this.edit(
+                        item.note.id,
+                        {
+                            content: content.innerText,
+                            title: title.innerText
+                        }
+                    )
+                    flag = !flag
+                    this.store = this.notes
+                    this.render()
+                } else {
+                    // flag === false
+                    edit.innerText = 'Сохранить'
+                    title.contentEditable = true
+                    content.contentEditable = true
+                    flag = !flag
+                }
+            })
+
             remove.addEventListener('click', () => {
                 this.remove(item.note.id)
                 this.render()
+                this.store = this.notes
             })
 
             buttons.append(remove, edit)
