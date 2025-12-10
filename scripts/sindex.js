@@ -132,6 +132,16 @@ class Notes {
     clearStore() {
         localStorage.removeItem('notes')
     }
+
+    async getData() {
+        try {
+            // что то ваять
+            // this.notes = [...data.map(item => ...), ...this.notes]
+            // this.render()
+        } catch (error) {
+
+        }
+    }
 }
 
 const notes = new Notes()
@@ -283,4 +293,185 @@ try {
     new NotesUI()
 } catch (error) {
     console.warn(error.message)
+} finally {
+    console.log('Что то произошло')
 }
+
+// Promises api
+
+// const promise = new Promise((resolve, reject) => {
+//     setTimeout(() => resolve('Промис выполнен успешно'), 6000)
+//     setTimeout(() => reject('Промис выполнен с ошибкой'), 4000)
+// })
+
+// console.log(promise)
+
+// promise
+//     .then(
+//         (data) => console.log(data),
+//         (error) => console.log(error)
+//     )
+//     .catch((error) => console.log(error))
+//     .finally(() => console.log('Выполняется вне зависимости от результата'))
+
+// const promise2 = new Promise((_, reject) => {
+//     reject('Промис всегда откланен')
+// })
+
+// promise2
+//     .catch(
+//         (error) => console.log(error)
+//     )
+
+// function httpGet(url) {
+//     return new Promise((resolve, reject) => {
+//         const xhr = new XMLHttpRequest()
+//         xhr.open('GET', url, true)
+
+//         xhr.onload = function () {
+//             if (this.status == 200) {
+//                 resolve(this.response)
+//             } else {
+//                 const error = new Error(this.statusText)
+//                 error.code = this.status
+//                 reject(error)
+//             }
+//         }
+
+//         xhr.onerror = function () {
+//             reject(new Error('Ошибка сети'))
+//         }
+
+//         xhr.send()
+//     })
+// }
+
+// const promise3 = Promise.resolve(window.location)
+
+// promise3
+//     .then(() => httpGet('https://jsonplaceholder.typicode.com/todos/'))
+//     .then((responce) => console.log(JSON.parse(responce)))
+//     .catch((error) => console.log(error))
+
+// const promise4 = Promise.reject('Всегда откланенный промис')
+
+// promise4
+//     // .then((data) => console.log(data))
+//     .catch((error) => console.log(error))
+
+// Promise.all([]) //передается массив промисов, ожидает выполнения всех промисов, будет сразу откланен, не дожидаясь остальный, если хотя бы один из промисов выполнен с ошибкой
+// Promise.race([]) //передается массив промисов, ожидает выполнение первого промиса
+// Promise.allSettled([]) //передается массив промисов, ожидает выполнения ВСЕХ переданных промисов
+
+// const promiseRes = Promise.resolve('Успешный')
+// const promiseRej = Promise.reject('Ошибка')
+
+// Promise
+//     .allSettled([promiseRes, promiseRej, promiseRes])
+//     .then((results) => {
+//         results.forEach(result => console.log(result))
+//     })
+
+// Promise
+//     .all([promiseRej, promiseRes])
+//     .then((results) => {
+//         console.log(results)
+
+//         // results.forEach(result => console.log(result))
+//     })
+//     .catch((error) => console.log(error))
+
+/** @type {HTMLDivElement} */
+const anim = document.querySelector('#anim')
+
+const animHandler = () => {
+    anim.classList.toggle('active')
+    anim.removeEventListener('click', animHandler)
+
+    // new Promise(() => {
+    anim.addEventListener('transitionend', () => {
+        anim.addEventListener('click', animHandler)
+    })
+    // })
+}
+
+anim.addEventListener('click', animHandler)
+
+// const responce = httpGet('autorizationUrl')
+
+// responce
+//     .then(responce => httpGet(`userUrl/${responce.userId}`))
+//     .catch(error => console.log(error))
+//     .then(responce => httpGet(`profileUrl/${responce.profileId}`))
+//     .catch(error => console.log(error))
+//     .then(responce => httpGet(`imagesUrl/${responce.imagesId}`))
+//     .catch(error => console.log(error))
+//     .then(responce => cobsole.log(responce))
+//     .catch(error => console.log(error))
+//     .finally()
+
+// const responce = Promise.resolve('A')
+
+// responce
+//     .then(data => {
+//         console.log(data)
+//         return Promise.resolve('B')
+//     })
+//     .catch(error => console.log(error))
+//     .then(data => {
+//         console.log(data)
+//         return Promise.reject('C')
+//     })
+//     .catch(error => console.log(error))
+//     .then(data => {
+//         console.log(data)
+//         return Promise.resolve('D')
+//     })
+//     .catch(error => console.log(error))
+//     .then(data => console.log(data))
+//     .catch(error => console.log(error))
+//     .finally()
+
+const functionAsync = async () => {
+    try {
+        const a = await Promise.resolve('A')
+        console.log(a)
+        const b = await Promise.resolve('B')
+        console.log(b)
+        const c = await Promise.resolve('C')
+        console.log(c)
+        const d = await Promise.resolve('D')
+        console.log(d)
+
+        anim.innerText = a + b + c + d
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
+const a = functionAsync()
+
+console.log(a)
+
+// a.then(result => console.log(result))
+
+// fetch('https://jsonplaceholder.typicode.com/todos/')
+//     .then(responce => responce.json())
+//     .then(data => console.log(data))
+//     .catch(error => console.log(error))
+
+const getData = async () => {
+    try {
+        const responce = await fetch('https://jsonplaceholder.typicode.com/todos/')
+        // console.log(responce)
+        if (!responce.ok) throw new Error(`Запрос не выполнен, статус ${responce.status}`)
+
+        const data = await responce.json()
+        anim.innerText = data[0].title
+    } catch (error) {
+        console.log(error.message)
+        console.log('Выполнил действия на случай ошибки')
+    }
+}
+
+getData()
