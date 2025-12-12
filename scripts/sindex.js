@@ -56,6 +56,14 @@ console.log(note)
  * @property {NoteItem} note
  */
 
+/**
+ * @typedef ResponceData
+ * @property {number} userId
+ * @property {number} id
+ * @property {string} title
+ * @property {string} body
+ */
+
 class Notes {
     /** @type {Array<Note>} */
     notes = []
@@ -135,11 +143,27 @@ class Notes {
 
     async getData() {
         try {
-            // что то ваять
-            // this.notes = [...data.map(item => ...), ...this.notes]
-            // this.render()
-        } catch (error) {
+            const responce = await fetch('https://jsonplaceholder.typicode.com/posts')
 
+            if (!responce.ok) {
+                throw new Error('Возникла ошибка')
+            }
+
+            /**
+             * @type {ResponceData[]}
+             */
+            const data = await responce.json()
+            if (!data) return
+
+            data.forEach(item => {
+                const note = new Note({
+                    title: item.title,
+                    content: item.body
+                })
+                this.notes.push(note)
+            })
+        } catch (error) {
+            console.log(error.message)
         }
     }
 }
@@ -186,7 +210,11 @@ class NotesUI extends Notes {
 
         // `
 
-        form.addEventListener('submit', (e) => {
+        /**
+         * 
+         * @param {SubmitEvent} e 
+         */
+        const handleSubmith = (e) => {
             e.preventDefault()
             /** @type {HTMLFormElement} */
             const target = e.target
@@ -200,7 +228,9 @@ class NotesUI extends Notes {
             console.log(this.notes)
             this.render()
             this.store = this.notes
-        })
+        }
+
+        form.addEventListener('submit', handleSubmith)
 
         const notesList = document.createElement('div')
         notesList.classList.add('notesList')
@@ -214,6 +244,8 @@ class NotesUI extends Notes {
          *  return 
          * }
          */
+        this.getData()
+            .then(() => this.render())
 
         /** @type {Note[]} но у storeNotes не будет метода edit*/
         const storeNotes = this.store
@@ -222,6 +254,7 @@ class NotesUI extends Notes {
             const note = new Note(item.note)
             this.notes.push(note)
         })
+
         this.render()
     }
 
@@ -297,181 +330,78 @@ try {
     console.log('Что то произошло')
 }
 
-// Promises api
+const input = document.querySelector('#city')
+const btn = document.querySelector('#btn')
+const box = document.querySelector('#info')
 
-// const promise = new Promise((resolve, reject) => {
-//     setTimeout(() => resolve('Промис выполнен успешно'), 6000)
-//     setTimeout(() => reject('Промис выполнен с ошибкой'), 4000)
-// })
-
-// console.log(promise)
-
-// promise
-//     .then(
-//         (data) => console.log(data),
-//         (error) => console.log(error)
-//     )
-//     .catch((error) => console.log(error))
-//     .finally(() => console.log('Выполняется вне зависимости от результата'))
-
-// const promise2 = new Promise((_, reject) => {
-//     reject('Промис всегда откланен')
-// })
-
-// promise2
-//     .catch(
-//         (error) => console.log(error)
-//     )
-
-// function httpGet(url) {
-//     return new Promise((resolve, reject) => {
-//         const xhr = new XMLHttpRequest()
-//         xhr.open('GET', url, true)
-
-//         xhr.onload = function () {
-//             if (this.status == 200) {
-//                 resolve(this.response)
-//             } else {
-//                 const error = new Error(this.statusText)
-//                 error.code = this.status
-//                 reject(error)
-//             }
-//         }
-
-//         xhr.onerror = function () {
-//             reject(new Error('Ошибка сети'))
-//         }
-
-//         xhr.send()
-//     })
-// }
-
-// const promise3 = Promise.resolve(window.location)
-
-// promise3
-//     .then(() => httpGet('https://jsonplaceholder.typicode.com/todos/'))
-//     .then((responce) => console.log(JSON.parse(responce)))
-//     .catch((error) => console.log(error))
-
-// const promise4 = Promise.reject('Всегда откланенный промис')
-
-// promise4
-//     // .then((data) => console.log(data))
-//     .catch((error) => console.log(error))
-
-// Promise.all([]) //передается массив промисов, ожидает выполнения всех промисов, будет сразу откланен, не дожидаясь остальный, если хотя бы один из промисов выполнен с ошибкой
-// Promise.race([]) //передается массив промисов, ожидает выполнение первого промиса
-// Promise.allSettled([]) //передается массив промисов, ожидает выполнения ВСЕХ переданных промисов
-
-// const promiseRes = Promise.resolve('Успешный')
-// const promiseRej = Promise.reject('Ошибка')
-
-// Promise
-//     .allSettled([promiseRes, promiseRej, promiseRes])
-//     .then((results) => {
-//         results.forEach(result => console.log(result))
-//     })
-
-// Promise
-//     .all([promiseRej, promiseRes])
-//     .then((results) => {
-//         console.log(results)
-
-//         // results.forEach(result => console.log(result))
-//     })
-//     .catch((error) => console.log(error))
-
-/** @type {HTMLDivElement} */
-const anim = document.querySelector('#anim')
-
-const animHandler = () => {
-    anim.classList.toggle('active')
-    anim.removeEventListener('click', animHandler)
-
-    // new Promise(() => {
-    anim.addEventListener('transitionend', () => {
-        anim.addEventListener('click', animHandler)
-    })
-    // })
-}
-
-anim.addEventListener('click', animHandler)
-
-// const responce = httpGet('autorizationUrl')
-
-// responce
-//     .then(responce => httpGet(`userUrl/${responce.userId}`))
-//     .catch(error => console.log(error))
-//     .then(responce => httpGet(`profileUrl/${responce.profileId}`))
-//     .catch(error => console.log(error))
-//     .then(responce => httpGet(`imagesUrl/${responce.imagesId}`))
-//     .catch(error => console.log(error))
-//     .then(responce => cobsole.log(responce))
-//     .catch(error => console.log(error))
-//     .finally()
-
-// const responce = Promise.resolve('A')
-
-// responce
-//     .then(data => {
-//         console.log(data)
-//         return Promise.resolve('B')
-//     })
-//     .catch(error => console.log(error))
-//     .then(data => {
-//         console.log(data)
-//         return Promise.reject('C')
-//     })
-//     .catch(error => console.log(error))
-//     .then(data => {
-//         console.log(data)
-//         return Promise.resolve('D')
-//     })
-//     .catch(error => console.log(error))
-//     .then(data => console.log(data))
-//     .catch(error => console.log(error))
-//     .finally()
-
-const functionAsync = async () => {
-    try {
-        const a = await Promise.resolve('A')
-        console.log(a)
-        const b = await Promise.resolve('B')
-        console.log(b)
-        const c = await Promise.resolve('C')
-        console.log(c)
-        const d = await Promise.resolve('D')
-        console.log(d)
-
-        anim.innerText = a + b + c + d
-    } catch (error) {
-        console.log('error', error)
-    }
-}
-
-const a = functionAsync()
-
-console.log(a)
-
-// a.then(result => console.log(result))
-
-// fetch('https://jsonplaceholder.typicode.com/todos/')
-//     .then(responce => responce.json())
-//     .then(data => console.log(data))
-//     .catch(error => console.log(error))
+/**
+ * @typedef WheatherData
+ * @property {{
+ *  lon: number,
+ *  lat: number
+ * }} coord
+ * @property {[{
+ *  id: number,
+ *  main: string,
+ *  description: string,
+ * icon: string
+ * }]} weather 
+ * @property {string} base
+ * @property {{
+ *  temp: number
+ *  feels_like: number
+ *  temp_min: number
+ *  temp_max: number
+ *  pressure: number
+ *  humidity: number
+ *  sea_level: number
+ *  grnd_level: number
+ * }} main
+ * @property {number} visibility
+ * @property {{
+ *  speed: number
+ *  deg: number
+ *  gust: number
+ * }} wind
+ * @property {{
+ *  all: number
+ * }} clouds
+ * @property {number} dt
+ * @property {{
+ *  country: string
+ *  sunrise: number
+ *  sunset: number
+ * }} sys
+ * @property {number} timezone
+ * @property {number} id
+ * @property {string} name
+ * @property {number} cod
+ */
 
 const getData = async () => {
-    try {
-        const responce = await fetch('https://jsonplaceholder.typicode.com/todos/')
-        // console.log(responce)
-        if (!responce.ok) throw new Error(`Запрос не выполнен, статус ${responce.status}`)
+    const city = input.value
 
+    try {
+        const responce = await fetch(`http://localhost:3000/api/wheather?q=${city}&lang=ru&units=metric`)
+
+        if (!responce.ok) {
+            throw new Error(responce.statusText)
+        }
+
+        /** @type {WheatherData} */
         const data = await responce.json()
-        anim.innerText = data[0].title
+
+        console.log(data)
+
+        box.innerHTML = `
+            <h2>${data.name}</h2>
+            <p>Температура - ${data.main.temp}</p>
+            <p>Скорость ветра - ${data.wind.speed}</p>
+            <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png"/>
+        `
     } catch (error) {
         console.log(error.message)
-        console.log('Выполнил действия на случай ошибки')
     }
 }
 
-getData()
+btn.addEventListener('click', getData)
