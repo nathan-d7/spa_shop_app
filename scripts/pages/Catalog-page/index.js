@@ -1,3 +1,6 @@
+import cartStore from "../../store/cartStore.js"
+import ShopItem from "./components/ShopItem/ShopItem.js"
+
 /**
  * @typedef {object} ShopData
  * @property {number} id
@@ -51,22 +54,30 @@ class CatalogPage {
     this.content.innerHTML = ''
 
     data.forEach(item => {
-      const shopItem = document.createElement('div')
-      shopItem.classList.add('shopItem')
+      // const shopItem = document.createElement('div')
+      // shopItem.classList.add('shopItem')
 
-      shopItem.innerHTML = `
-        <h3 class="itemTitle">${item.title}</h3>
-        <p class="itemCategory">${item.category}</p>
-        <div class="itemImage">
-          <img src="${item.image}" alt="${item.title}"/>
-        </div>
-        <div class="itemContent">
-          <p class="itemDescription">${item.description}</p>
-          <p class="itemPrice">${item.price}</p>
-        </div>
-      `
+      // shopItem.innerHTML = `
+      //   <h3 class="itemTitle">${item.title}</h3>
+      //   <p class="itemCategory">${item.category}</p>
+      //   <div class="itemImage">
+      //     <img src="${item.image}" alt="${item.title}"/>
+      //   </div>
+      //   <div class="itemContent">
+      //     <p class="itemDescription">${item.description}</p>
+      //     <p class="itemPrice">${item.price}</p>
+      //   </div>
+      // `
 
-      this.content.append(shopItem)
+      const shopItem = new ShopItem({
+        data: item,
+        adToCart: (item) => cartStore.addItem(item),
+        decrase: () => null,
+        incrase: () => null,
+        removeCart: () => null,
+      })
+
+      this.content.append(shopItem.render())
     })
   }
 

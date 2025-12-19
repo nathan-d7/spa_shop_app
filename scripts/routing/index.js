@@ -1,6 +1,6 @@
 const routeMap = {
   catalog: 'Catalog-page',
-  card: 'Card-page',
+  cart: 'Cart-page',
   home: 'Index-page'
 }
 

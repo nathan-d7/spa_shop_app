@@ -1,0 +1,80 @@
+/**
+ * @typedef {object} props
+ * @property {string} className имена классов передаются через пробелы
+ * @property {string} name
+ * @property {string} id
+ * @property {string} src
+ * @property {string} alt
+ * @property {string} href
+ * @property {string} title
+ * @property {(e: MouseEvent) => void} onClick
+ */
+
+/**
+ * Создание элементов с их контекстом
+ * @param {string} type
+ * @param {props | null} props
+ * @param {(HTMLElement | string)[]} children
+ * @returns {HTMLElement}
+ */
+export const createElement = (type, props, ...children) => {
+  const item = document.createElement(type)
+
+  if (children.length) {
+    children.forEach(child => {
+      if (typeof child === 'string') {
+        item.innerText = item.innerText + child
+      } else {
+        item.append(child)
+      }
+    })
+  }
+
+  if (!props) return item
+
+  const {
+    className,
+    id,
+    name,
+    onClick,
+    alt,
+    href,
+    src,
+    title
+  } = props
+
+  if (className?.length) {
+    const classNames = className.split(' ')
+    classNames.forEach(name => item.classList.add(name))
+  }
+
+  if (name) {
+    item.setAttribute('name', name)
+  }
+
+  if (id) {
+    item.setAttribute('id', id)
+  }
+
+  if (alt) {
+    item.setAttribute('alt', alt)
+  }
+
+  if (href) {
+    item.setAttribute('href', href)
+  }
+
+  if (src) {
+    item.setAttribute('src', src)
+  }
+
+  if (title) {
+    item.setAttribute('title', title)
+  }
+
+  if (onClick) {
+    item.addEventListener('click', onClick)
+  }
+
+  return item
+}

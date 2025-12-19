@@ -1,9 +1,9 @@
-class CardPage {
+class CartPage {
   constructor() {
     this.item = document.createElement('div')
     this.item.classList.add('container')
     this.item.innerHTML = `
-      <h2>Card</h2>
+      <h2>Cart</h2>
     `
   }
 
@@ -12,4 +12,4 @@ class CardPage {
   }
 }
 
-export default CardPage
+export default CartPage
