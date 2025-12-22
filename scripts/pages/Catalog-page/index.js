@@ -1,4 +1,5 @@
 import cartStore from "../../store/cartStore.js"
+import productStore from "../../store/productStore.js"
 import ShopItem from "./components/ShopItem/ShopItem.js"
 
 /**
@@ -28,32 +29,46 @@ class CatalogPage {
     this.content = document.createElement('div')
     this.content.classList.add('shopContent')
     this.item.append(this.content)
+
+    productStore.subscribe(() => {
+      this.contentRender()
+    })
+
+    this.getData()
+    this.contentRender()
   }
 
-  async getApiData() {
-    try {
-      const responce = await fetch('https://fakestoreapi.com/products')
-
-      if (!responce.ok) {
-        throw new Error('Не получилось получить данные')
-      }
-
-      const data = await responce.json()
-
-      this.contentRender(data)
-    } catch (error) {
-      console.log(error.message)
+  getData () {
+    if (!productStore.state.productItems.length) {
+      productStore.findAll()
     }
   }
+
+  // async getApiData() {
+  //   try {
+  //     const responce = await fetch('https://fakestoreapi.com/products')
+
+  //     if (!responce.ok) {
+  //       throw new Error('Не получилось получить данные')
+  //     }
+
+  //     const data = await responce.json()
+
+  //     this.contentRender(data)
+  //   } catch (error) {
+  //     console.log(error.message)
+  //   }
+  // }
 
   /**
    * 
    * @param {ShopData[]} data 
    */
-  contentRender(data) {
+  contentRender() {
+    if (!productStore.state.productItems.length) return
     this.content.innerHTML = ''
 
-    data.forEach(item => {
+    productStore.state.productItems.forEach(item => {
       // const shopItem = document.createElement('div')
       // shopItem.classList.add('shopItem')
 
@@ -71,7 +86,7 @@ class CatalogPage {
 
       const shopItem = new ShopItem({
         data: item,
-        adToCart: (item) => cartStore.addItem(item),
+        adToCart: (item) => cartStore.addItem(item.id),
         decrase: () => null,
         incrase: () => null,
         removeCart: () => null,
@@ -82,7 +97,7 @@ class CatalogPage {
   }
 
   render() {
-    this.getApiData()
+    // this.getApiData()
     return this.item
   }
 }

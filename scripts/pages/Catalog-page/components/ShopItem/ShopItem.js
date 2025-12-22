@@ -1,4 +1,5 @@
 import { createElement } from "../../../../utils/index.js"
+import ControllItem from "../ControllItem/ControllItem.js"
 
 /**
  * @typedef {object} ShopItemsProps
@@ -70,11 +71,17 @@ class ShopItem {
         className: 'itemImage'
       },
       createElement(
-        'img',
+        'a',
         {
-          src: this.data.image,
-          alt: this.data.title
-        }
+          href: `#catalog/${this.data.id}`
+        },
+        createElement(
+          'img',
+          {
+            src: this.data.image,
+            alt: this.data.title
+          }
+        )
       )
     )
 
@@ -95,13 +102,7 @@ class ShopItem {
       )
     )
 
-    const button = createElement(
-      'button',
-      {
-        onClick: () => this.adToCart(this.data)
-      },
-      'Добавить в корзину'
-    )
+    const button = new ControllItem(this.data).render()
 
     this.item.append(
       title,

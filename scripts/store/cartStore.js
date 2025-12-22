@@ -1,6 +1,6 @@
 /**
  * @typedef {object} CartItem
- * @property {import("../pages/Catalog-page").ShopData} item
+ * @property {number} id
  * @property {number} count
  */
 
@@ -21,7 +21,7 @@ class CartStore {
         const oldValue = target[prop]
         target[prop] = value
 
-        this.notyfy(prop, oldValue, value)
+        this.notyfy(prop, oldValue, value)  
         return true
       }
     })
@@ -37,15 +37,55 @@ class CartStore {
     this.subcribes.forEach(cd => cd(prop, oldValue, newValue))
   }
 
-  addItem(item) {
+  addItem(id) {
     this.state.cartItem = [...this.state.cartItem, {
-      item,
+      id,
       count: 1
     }]
   }
 
+  increase(id) {
+    this.state.cartItem = this.state.cartItem.map(item => {
+      if (item.id === id) {
+        item.count += 1
+        return item
+      } else {
+        return item
+      }
+    })
+  }
+
+  decrease(id) {
+    // /** @type {CartItem} */
+    // const item = this.cartItemById[id]
+    // item.count += 1
+
+    this.state.cartItem = this.state.cartItem.map(item => {
+      if (item.id === id) {
+        item.count -= 1
+        if (item.count > 0) {
+          return item
+        } else {
+          return null
+        }
+      } else {
+        return item
+      }
+    }).filter(item => item)
+  }
+
+  /**
+   * @returns {CartItem}
+   */
+  get cartItemById () {
+    return this.state.cartItem.reduce((acc, item) => {
+      acc[item.id] = item
+      return acc
+    }, {})
+  }
+
   removeItem(id) {
-    this.state.cartItem = this.state.cartItem.map(item => item.item.id !== id)
+    this.state.cartItem = this.state.cartItem.filter(item => item.id !== id)
   }
 }
 

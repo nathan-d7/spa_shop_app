@@ -1,9 +1,15 @@
+import cartStore from "../../store/cartStore.js"
+import productStore from "../../store/productStore.js"
 import { createElement } from "../../utils/index.js"
 
 class CartCount {
-  constructor(store) {
-    store.subscribe((_a, _b, newValue) => {
-      this.createCount(store.state.cartItem.length, newValue)
+  constructor() {
+    cartStore.subscribe(() => {
+      this.createCount()
+    })
+
+    productStore.subscribe(() => {
+      this.createCount()
     })
 
     this.item = createElement(
@@ -13,7 +19,15 @@ class CartCount {
       }
     )
 
-    this.createCount(0, null)
+
+
+    this.createCount()
+  }
+
+  getData() {
+    if (!productStore.state.productItems.length) {
+      productStore.findAll()
+    }
   }
 
   /**
@@ -21,13 +35,13 @@ class CartCount {
    * @param {number} count 
    * @param {import("../../store/cartStore.js").CartItem[]} value 
    */
-  createCount(count, value) {
+  createCount() {
     this.item.innerHTML = ''
     const counter = createElement('a', { href: '#cart' },
       '(',
-      `${count}`,
+      `${cartStore.state.cartItem.length}`,
       ' | ',
-      `${value ? value.reduce((acc, cartItem) => acc += cartItem.count * cartItem.item.price, 0) : 0}`,
+      `${cartStore.state.cartItem.reduce((acc, cartItem) => acc += cartItem.count * productStore.productById[cartItem.id].price, 0).toFixed(2)}`,
       '$)'
     )
     this.item.append(counter)
