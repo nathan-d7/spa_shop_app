@@ -1,12 +1,12 @@
 import cartStore from "../../../../store/cartStore.js"
 import { createElement } from "../../../../utils/index.js"
 
-class ControllItem {
+class ProductButtons {
   /**
    * 
-   * @param {import("../..").ShopData} data 
+   * @param {number} id 
    */
-  constructor(data) {
+  constructor(id) {
     this.item = createElement('div', {
       className: 'controllButtons'
     })
@@ -15,37 +15,27 @@ class ControllItem {
       this.createControll()
     })
 
-    this.data = data
+    this.id = id
     this.createControll()
   }
 
   createControll() {
     this.item.innerHTML = ''
 
-    if (cartStore.state.cartItem.some(item => item.id === this.data.id)) {
+    if (cartStore.state.cartItem.some(item => item.id === this.id)) {
       // console.log(cartStore.cartItemById);
 
       const incraseButton = createElement('button', {
-        onClick: () => cartStore.increase(this.data.id),
+        onClick: () => cartStore.increase(this.id),
         className: 'countButton incraseButton'
       }, '+')
 
       const count = createElement('div', {
-        className: 'count',
-        contentEditable: true,
-        onKeydown: (e) => {
-          const key = e.key
-          const value = e.target.innerText
-          if (isNaN(value)) return
-          if (+value < 1) return
-          if (key !== 'Enter') return
-
-          cartStore.setCount(this.data.id, value)
-        }
-      }, `${cartStore.cartItemById[this.data.id].count}`)
+        className: 'count'
+      }, `${cartStore.cartItemById[this.id].count}`)
 
       const decreaseButton = createElement('button', {
-        onClick: () => cartStore.decrease(this.data.id),
+        onClick: () => cartStore.decrease(this.id),
         className: 'countButton decreaseButton'
       }, '-')
 
@@ -61,7 +51,7 @@ class ControllItem {
 
       const remove = createElement('button', {
         className: 'removeButton',
-        onClick: () => cartStore.removeItem(this.data.id)
+        onClick: () => cartStore.removeItem(this.id)
       }, 'Удалить')
 
       this.item.append(countContainer, remove)
@@ -69,7 +59,7 @@ class ControllItem {
       const button = createElement(
         'button',
         {
-          onClick: () => cartStore.addItem(this.data.id)
+          onClick: () => cartStore.addItem(this.id)
         },
         'Добавить в корзину'
       )
@@ -83,4 +73,4 @@ class ControllItem {
   }
 }
 
-export default ControllItem
+export default ProductButtons

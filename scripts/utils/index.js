@@ -7,7 +7,9 @@
  * @property {string} alt
  * @property {string} href
  * @property {string} title
+ * @property {boolean} contentEditable
  * @property {(e: MouseEvent) => void} onClick
+ * @property {(e: KeyboardEvent) => void} onKeydown
  */
 
 /**
@@ -40,7 +42,9 @@ export const createElement = (type, props, ...children) => {
     alt,
     href,
     src,
-    title
+    title,
+    contentEditable,
+    onKeydown
   } = props
 
   if (className?.length) {
@@ -72,8 +76,14 @@ export const createElement = (type, props, ...children) => {
     item.setAttribute('title', title)
   }
 
+  item.setAttribute('contentEditable', contentEditable)
+
   if (onClick) {
     item.addEventListener('click', onClick)
+  }
+
+  if (onKeydown) {
+    item.addEventListener('keydown', onKeydown)
   }
 
   return item

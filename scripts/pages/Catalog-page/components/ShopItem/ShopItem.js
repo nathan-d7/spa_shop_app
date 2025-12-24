@@ -98,7 +98,10 @@ class ShopItem {
       createElement(
         'p',
         { className: 'itemPrice' },
-        this.data.price
+        this.data.price.toLocaleString('ru-RU', {
+          style: 'currency',
+          currency: 'USD'
+        })
       )
     )
 

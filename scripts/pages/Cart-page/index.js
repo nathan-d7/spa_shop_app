@@ -50,7 +50,10 @@ class CartPage {
             createElement('a', { href: `#catalog/${data.id}` }, data.title)
           ),
           createElement('p', { className: 'cartCategory' }, data.category),
-          createElement('p', { className: 'cartPrice' }, `${data.price * cart.count}`)
+          createElement('p', { className: 'cartPrice' }, (data.price * cart.count).toLocaleString('ru-RU', {
+            style: 'currency',
+            currency: 'USD'
+          }))
         ),
         createElement('button', { className: 'removecart', onClick: () => cartStore.removeItem(data.id) }, 'Убрать из карзины')
       )

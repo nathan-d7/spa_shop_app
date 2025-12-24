@@ -21,7 +21,7 @@ class CartStore {
         const oldValue = target[prop]
         target[prop] = value
 
-        this.notyfy(prop, oldValue, value)  
+        this.notyfy(prop, oldValue, value)
         return true
       }
     })
@@ -74,10 +74,21 @@ class CartStore {
     }).filter(item => item)
   }
 
+  setCount(id, value) {
+    this.state.cartItem = this.state.cartItem.map(item => {
+      if (item.id === id) {
+        item.count = Number(value)
+        return item
+      } else {
+        return item
+      }
+    })
+  }
+
   /**
    * @returns {CartItem}
    */
-  get cartItemById () {
+  get cartItemById() {
     return this.state.cartItem.reduce((acc, item) => {
       acc[item.id] = item
       return acc

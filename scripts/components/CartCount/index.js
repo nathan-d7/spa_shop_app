@@ -39,10 +39,18 @@ class CartCount {
     this.item.innerHTML = ''
     const counter = createElement('a', { href: '#cart' },
       '(',
-      `${cartStore.state.cartItem.length}`,
+      `${cartStore.state.cartItem.reduce((acc, cartItem) => acc += cartItem.count, 0)}`,
       ' | ',
-      `${cartStore.state.cartItem.reduce((acc, cartItem) => acc += cartItem.count * productStore.productById[cartItem.id].price, 0).toFixed(2)}`,
-      '$)'
+      `${
+      // new Intl.NumberFormat('ru-RU', { style: "currency", currency: "USD" })
+      //   .format(
+      //     cartStore.state.cartItem.reduce((acc, cartItem) => acc += cartItem.count * productStore.productById[cartItem.id].price, 0)
+      //   )
+      cartStore.state.cartItem.reduce((acc, cartItem) => acc += cartItem.count * productStore.productById[cartItem.id].price, 0).toLocaleString('ru-RU', {
+        style: 'currency',
+        currency: 'USD'
+      })
+      }`,')'
     )
     this.item.append(counter)
   }
