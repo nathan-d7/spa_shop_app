@@ -27,7 +27,7 @@ class ProductButtons {
 
       const incraseButton = createElement('button', {
         onClick: () => cartStore.increase(this.id),
-        className: 'countButton incraseButton'
+        className: 'countButton increaseButton'
       }, '+')
 
       const count = createElement('div', {
@@ -52,16 +52,17 @@ class ProductButtons {
       const remove = createElement('button', {
         className: 'removeButton',
         onClick: () => cartStore.removeItem(this.id)
-      }, 'Удалить')
+      }, 'Remove')
 
       this.item.append(countContainer, remove)
     } else {
       const button = createElement(
         'button',
         {
+          className: 'addToCartButton',
           onClick: () => cartStore.addItem(this.id)
         },
-        'Добавить в корзину'
+        'Add to cart'
       )
 
       this.item.append(button)

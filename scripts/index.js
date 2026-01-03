@@ -1,6 +1,7 @@
 import Header from "./components/Header/index.js";
 import Main from "./components/Main/index.js";
 import Footer from "./components/Footer/index.js";
+import CookieStore from "./store/cookieStore.js";
 
 const root = document.getElementById('root')
 

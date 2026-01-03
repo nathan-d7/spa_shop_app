@@ -21,7 +21,7 @@ import ShopItem from "./components/ShopItem/ShopItem.js"
 class CatalogPage {
   constructor() {
     this.item = document.createElement('div')
-    this.item.classList.add('container')
+    this.item.classList.add('containerCatalog')
     this.item.innerHTML = `
       <h2>Catalog</h2>
     `

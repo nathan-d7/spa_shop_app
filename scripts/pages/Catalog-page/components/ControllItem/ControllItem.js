@@ -27,19 +27,30 @@ class ControllItem {
 
       const incraseButton = createElement('button', {
         onClick: () => cartStore.increase(this.data.id),
-        className: 'countButton incraseButton'
+        className: 'countButton increaseButton'
       }, '+')
 
       const count = createElement('div', {
         className: 'count',
         contentEditable: true,
-        onKeydown: (e) => {
+        onKeyPress: (e) => {
           const key = e.key
           const value = e.target.innerText
+
+          if(isNaN(+key) && key !== 'Backspace') {
+            e.target.contentEditable = false
+          }
+
+          e.target.contentEditable = true
+
           if (isNaN(value)) return
           if (+value < 1) return
           if (key !== 'Enter') return
-
+        
+          cartStore.setCount(this.data.id, value)
+        },
+        onBlur: (e) => {
+          const value = e.target.innerHTML
           cartStore.setCount(this.data.id, value)
         }
       }, `${cartStore.cartItemById[this.data.id].count}`)
@@ -62,16 +73,17 @@ class ControllItem {
       const remove = createElement('button', {
         className: 'removeButton',
         onClick: () => cartStore.removeItem(this.data.id)
-      }, 'Удалить')
+      }, 'Remove')
 
       this.item.append(countContainer, remove)
     } else {
       const button = createElement(
         'button',
         {
+          className: 'addToCartButton',
           onClick: () => cartStore.addItem(this.data.id)
         },
-        'Добавить в корзину'
+        'Add to cart'
       )
 
       this.item.append(button)
