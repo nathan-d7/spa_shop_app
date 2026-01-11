@@ -50,5 +50,24 @@
     font-size: 14px;
   }
 
+}
 
+@media (max-width: 425.98px) {
+
+  .filterProdBox {
+    flex-wrap: wrap;
+  }
+
+  .cartCount {
+    width: 100%;
+  }
+
+  .cartCount a {
+    justify-content: flex-start;
+  }
+
+  .filterProdInput {
+    width: 80%;
+    margin-left: 0;
+  }
 }
