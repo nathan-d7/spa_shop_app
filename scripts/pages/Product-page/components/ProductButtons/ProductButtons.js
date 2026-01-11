@@ -23,7 +23,6 @@ class ProductButtons {
     this.item.innerHTML = ''
 
     if (cartStore.state.cartItem.some(item => item.id === this.id)) {
-      // console.log(cartStore.cartItemById);
 
       const incraseButton = createElement('button', {
         onClick: () => cartStore.increase(this.id),

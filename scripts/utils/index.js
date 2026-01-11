@@ -7,6 +7,8 @@
  * @property {string} alt
  * @property {string} href
  * @property {string} title
+ * @property {string} placeholder
+ * @property {string} method
  * @property {boolean} contentEditable
  * @property {(e: MouseEvent) => void} onClick
  * @property {(e: KeyboardEvent) => void} onKeyPress
@@ -44,6 +46,8 @@ export const createElement = (type, props, ...children) => {
     href,
     src,
     title,
+    placeholder,
+    method,
     contentEditable,
     onKeyPress,
     onBlur
@@ -78,6 +82,13 @@ export const createElement = (type, props, ...children) => {
     item.setAttribute('title', title)
   }
 
+  if (placeholder) {
+    item.setAttribute('placeholder', placeholder)
+  }
+
+  if (method) {
+    item.setAttribute('method', method)
+  }
 
   item.setAttribute('contentEditable', contentEditable)
 

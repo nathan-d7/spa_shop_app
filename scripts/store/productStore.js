@@ -7,7 +7,8 @@ class ProductStore {
   constructor() {
     /** @type {state} */
     this.state = {
-      productItems: []
+      productItems: [],
+      visibleItems: []
     }
 
     this.state = new Proxy(this.state, {
@@ -15,7 +16,7 @@ class ProductStore {
         const oldValue = target[prop]
         target[prop] = value
 
-        this.notyfy(prop, oldValue, value)
+        this.notify(prop, oldValue, value)
         return true
       }
     })
@@ -27,7 +28,7 @@ class ProductStore {
     this.subcribes.push(callback)
   }
 
-  notyfy(prop, oldValue, newValue) {
+  notify(prop, oldValue, newValue) {
     this.subcribes.forEach(cd => cd(prop, oldValue, newValue))
   }
 
@@ -41,13 +42,22 @@ class ProductStore {
 
       const data = await responce.json()
       this.setAll(data)
+      this.setAll(data)
     } catch (error) {
       console.log(error.message)
     }
   }
 
+  filterByTitle(value) {
+
+    this.state.visibleItems = !value
+      ? this.state.productItems
+      : this.state.productItems.filter(item => item.title.toLowerCase().includes(value))
+  }
+
   setAll(items) {
     this.state.productItems = items
+    this.state.visibleItems = items
   }
 
   get productById() {
@@ -56,7 +66,9 @@ class ProductStore {
       return acc
     }, {})
   }
+
 }
 
 const productStore = new ProductStore()
 export default productStore
+

@@ -23,7 +23,6 @@ class ControllItem {
     this.item.innerHTML = ''
 
     if (cartStore.state.cartItem.some(item => item.id === this.data.id)) {
-      // console.log(cartStore.cartItemById);
 
       const incraseButton = createElement('button', {
         onClick: () => cartStore.increase(this.data.id),

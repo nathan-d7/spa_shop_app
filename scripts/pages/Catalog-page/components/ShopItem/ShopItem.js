@@ -36,17 +36,6 @@ class ShopItem {
   }
 
   createItem() {
-    // this.item.innerHTML = `
-    //     <h3 class="itemTitle">${item.title}</h3>
-    //     <p class="itemCategory">${item.category}</p>
-    //     <div class="itemImage">
-    //       <img src="${item.image}" alt="${item.title}"/>
-    //     </div>
-    //     <div class="itemContent">
-    //       <p class="itemDescription">${item.description}</p>
-    //       <p class="itemPrice">${item.price}</p>
-    //     </div>
-    //   `
 
     const title = createElement(
       'h3',

@@ -1,7 +1,7 @@
 import cartStore from "../../store/cartStore.js"
 import productStore from "../../store/productStore.js"
 import { createElement } from "../../utils/index.js"
-import CookieStore from "../../store/cookieStore.js";
+import cookieStore from "../../store/cookieStore.js";
 import CartItemControls from "./components/CartItemsControls.js";
 
 class CartPage {
@@ -35,15 +35,20 @@ class CartPage {
   createCart() {
     this.cartContainer.innerHTML = ''
 
-    const cookies = new CookieStore()
-
-    if (!cartStore.state.cartItem.length && !cookies.getCookie('cartItems')) {
-      this.cartContainer.innerHTML = '<h2>The cart is empty!</h2>'
+    if (!cartStore.state.cartItem.length && !cookieStore.getCookie('cartItems')) {
+      this.cartContainer.innerHTML = `
+      <div class="emptyCartBox">
+        <h2>The cart is empty!</h2>
+        <div class="emptyCartImgCont">
+          <img class="emptyCartImg" src="images/pictures/empty_cart.png" alt="The cart's empty"/>
+        </div>
+      </div>
+      `
       return
     }
 
     if (!this.checkCookie) {
-      const cookie = cookies.getCookie('cartItems')
+      const cookie = cookieStore.getCookie('cartItems')
 
     if (cookie && !cartStore.state.cartItem.length) {
         const cookieData = JSON.parse(cookie)
@@ -84,7 +89,7 @@ class CartPage {
           })),
           new CartItemControls(data.id).render()
         )
-        // createElement('button', { className: 'removecart', onClick: () => cartStore.removeItem(data.id) }, 'Убрать из карзины')
+      
       )
 
       this.cartContainer.append(cartItem)

@@ -14,21 +14,15 @@ class CookieStore {
     }
 
     setCookie() {
-        // const name = "cartItems"
-        // const value = JSON.stringify(this.cartData.filter(item => item))
-        // document.cookie = name + "=" + value 
-
+    
         const items = cartStore.state.cartItem
 
         if (!items.length) {
-            document.cookie = "cartItems=; max-age=0; path=/"
+            document.cookie = "cartItems=false; max-age=-1; path=/"
             return
         }
 
-        document.cookie =
-        "cartItems=" +
-        JSON.stringify(items) +
-        "; path=/"
+        document.cookie = "cartItems=" + JSON.stringify(items) + "; path=/"
     }
     
     getCookie(name) {
@@ -39,4 +33,8 @@ class CookieStore {
 
 }
 
-export default CookieStore
+const cookieStore =  new CookieStore()
+export default cookieStore
+
+
+

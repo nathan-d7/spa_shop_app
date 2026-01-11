@@ -47,14 +47,11 @@ class CartItemControls {
             const remove = createElement('button', {
                 className: 'removeButton',
                 onClick: () => cartStore.removeItem(this.id)
-            }, 'Remove from the cart')
+            }, 'Remove')
 
             this.item.append(countButtonsBox, remove)
         } 
         
-        // else {
-        //     console.log('Got you') // проблема в cookie
-        // }
     }
 
     render() {

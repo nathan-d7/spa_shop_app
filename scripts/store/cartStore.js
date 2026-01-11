@@ -21,7 +21,7 @@ class CartStore {
         const oldValue = target[prop]
         target[prop] = value
 
-        this.notyfy(prop, oldValue, value)
+        this.notify(prop, oldValue, value)
         return true
       }
     })
@@ -33,7 +33,7 @@ class CartStore {
     this.subcribes.push(callback)
   }
 
-  notyfy(prop, oldValue, newValue) {
+  notify(prop, oldValue, newValue) {
     this.subcribes.forEach(cd => cd(prop, oldValue, newValue))
   }
 
@@ -56,9 +56,6 @@ class CartStore {
   }
 
   decrease(id) {
-    // /** @type {CartItem} */
-    // const item = this.cartItemById[id]
-    // item.count += 1
 
     this.state.cartItem = this.state.cartItem.map(item => {
       if (item.id === id) {
@@ -102,3 +99,4 @@ class CartStore {
 
 const cartStore = new CartStore()
 export default cartStore
+
