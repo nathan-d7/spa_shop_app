@@ -48,7 +48,7 @@ class CartPage {
     }
 
     if (!this.checkCookie) {
-      const cookie = cookieStore.getCookie('cartItems')
+      const cookie = decodeURIComponent(cookieStore.getCookie('cartItems'))
 
     if (cookie && !cartStore.state.cartItem.length) {
         const cookieData = JSON.parse(cookie)

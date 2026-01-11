@@ -43,7 +43,7 @@ class CartCount {
       
       if(cookieLength && !cartStore.state.cartItem.length) {
         const cookie = cookieStore.getCookie('cartItems')
-        this.cookieData = JSON.parse(cookie)
+        this.cookieData = JSON.parse(decodeURIComponent(cookie))
 
         this.totalPrice = createElement('span', {className: 'cartTotalPrice'}, 
            this.cookieData.reduce((acc, cartItem) => acc += cartItem.count * productStore.productById[cartItem.id].price, 0).toLocaleString('ru-RU', 

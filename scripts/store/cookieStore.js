@@ -22,7 +22,7 @@ class CookieStore {
             return
         }
 
-        document.cookie = "cartItems=" + JSON.stringify(items) + "; path=/"
+        document.cookie = "cartItems=" + encodeURIComponent(JSON.stringify(items)) + "; path=/"
     }
     
     getCookie(name) {
